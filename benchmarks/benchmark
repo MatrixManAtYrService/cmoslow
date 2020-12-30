@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+set -eumo pipefail
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+# read the comment from stdin
+if [ -t 0 ]
+then
+    echo "try:"
+    echo "     $ echo 'some comment for this run' | $0"
+    exit 1
+fi
+COMMENT="$(cat -)"
+
+
+
+# assume efi partition is mounted
+if [ ! -d /mnt/efi/EFI ]
+then
+    echo 'Please run:
+    sudo mkdir -p /mnt/efi
+    sudo mount /dev/nvme0n1p1 /mnt/efi'
+    echo "then try again"
+    exit 2
+fi
+
+set -x
+echo "ensure sudo access..."
+sudo bash -c 'dmidecode --type 0 &> /dev/null'
+set +x
+
+# bookeeping
+STAMP="$(date "+%Y-%m-%d.%H.%M")"
+ORIG="$(pwd)"
+echo "Name: $STAMP"
+OUT="$DIR/data/$STAMP"
+mkdir -p "$OUT"
+cd "$OUT"
+echo "Results go in: $OUT"
+echo "Comment: $(echo $COMMENT | tee comment)"
+
+
+echo "Copying EFI partition..."
+cp -r /mnt/efi/EFI "$OUT/EFI"
+echo "Fingerprinting EFI partition..."
+find ./EFI -type f | xargs md5sum | md5sum | tee efi_md5
+
+echo "Grabbing resource usage..."
+top -bn1 > top
+
+echo "Grabbing kernel info..."
+cat /proc/cmdline > cmdline
+uname -a > uname
+
+echo "Grabbing bios info..."
+sudo dmidecode --type 0
+
+
+# open a gnome terminal
+{
+    EXISTING=$(mktemp)
+    WITH_NEW=$(mktemp)
+    winscan() {
+        set +o pipefail
+        wmctrl -l -x | egrep ' gnome-terminal-server' | grep -v 'egrep' | awk '{print $1}' > $1
+        set -o pipefail
+    }
+    winscan $EXISTING
+    gnome-terminal
+    sleep 1
+    winscan $WITH_NEW
+}
+TERMINAL=$(comm -13 $EXISTING $WITH_NEW)
+WINDOW_ID=$(printf %i $TERMINAL)
+echo "Launched gnome-terminal window $TERMINAL $WINDOW_ID"
+i3-msg "[id=$WINDOW_ID] focus"
+
+viopen()
+{
+    # open the file
+    xdotool type --window $WINDOW_ID "vi $DIR/samplefile.rst"
+    xdotool key --window $WINDOW_ID Return
+    sleep 2
+
+    # start profiling
+    xdotool type --window $WINDOW_ID -- ':profile start profile.log'
+    xdotool key --window $WINDOW_ID Return
+    xdotool type --window $WINDOW_ID -- ':profile func *'
+    xdotool key --window $WINDOW_ID Return
+    xdotool type --window $WINDOW_ID -- ':profile file *'
+    xdotool key --window $WINDOW_ID Return
+}
+
+visaveclose()
+{
+    # write the file
+    xdotool key --window $WINDOW_ID Escape
+    xdotool type --window $WINDOW_ID ":w! sample.rst.modified"
+    xdotool key --window $WINDOW_ID Return
+
+    # stop profiling and exit
+    xdotool type --window $WINDOW_ID -- ':profile pause'
+    xdotool key --window $WINDOW_ID Return
+    xdotool type --window $WINDOW_ID -- ':noautocmd qall!'
+    xdotool key --window $WINDOW_ID Return
+}
+
+make_edits()
+{
+    viopen
+
+
+    # scroll through
+    xdotool type --window $WINDOW_ID -- 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj'
+    sleep 1
+    xdotool type --window $WINDOW_ID -- 'i...this is the song that never ends yes it goes on and on my friend some people started singining it not knowing what it was, and theyll continue singing it forever just because this is the song that never ends...'
+    xdotool key --window $WINDOW_ID Escape
+    xdotool type --window $WINDOW_ID -- 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj'
+    sleep 1
+    xdotool type --window $WINDOW_ID -- 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj'
+    xdotool type --window $WINDOW_ID -- 'i...yes it goes on and on my friend some people started singining it not knowing what it was, and theyll continue singing it forever just because this is the song that never ends...'
+    visaveclose
+}
+
+start_cast()
+{
+    xdotool type --window $WINDOW_ID -- "asciinema rec session.cast"
+    xdotool key --window $WINDOW_ID Return
+    sleep 2
+}
+
+end_cast()
+{
+    sleep 2
+    set +o pipefail
+    ps aux | grep asciinema | grep -v grep | awk '{print $2}' | xargs kill -TERM
+    set -o pipefail
+}
+
+start_cast
+
+echo "vim keystroke delay"
+echo "==================="
+echo
+echo "Waiting on edits..."
+
+# start waiting for file to be saved
+{ inotifywait -e create . || true ; } &
+# kick off edits
+date +"%s" | tee edits_started
+make_edits
+# resume waiting
+fg || true
+date +"%s" | tee edits_complete
+
+# subtract
+set +x
+echo -n edit time:
+echo $(cat edits_complete) - $(cat edits_started) | bc
+end_cast
+
+echo "sysbench"
+echo "========"
+echo
+sysbench cpu run | tee cpu
+sysbench memory run | tee memory
+
+echo "Done"
+cd "$ORIG"
