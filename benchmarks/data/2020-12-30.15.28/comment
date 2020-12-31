@@ -1,0 +1,1 @@
+Rebooted again, but this time I let it boot to Windows. Missed F11 on the reboot, so I actually booted windows twice in this case. Upon making it back to linux the EFI partition is at /dev/nvme0n1p1

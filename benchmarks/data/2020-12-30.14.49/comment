@@ -1,0 +1,1 @@
+just cleared cmos, havent started working yet today. weirdly... my efi partition was at /dev/nvme2n1p1 this time. Pre-clear it was at /dev/nvme0n1p1. Huh?

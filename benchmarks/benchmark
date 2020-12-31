@@ -54,6 +54,8 @@ uname -a > uname
 echo "Grabbing bios info..."
 sudo dmidecode --type 0
 
+echo "Grabbing hw info..."
+sudo inxi -F > inxi
 
 # open a gnome terminal
 {

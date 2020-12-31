@@ -1,0 +1,35 @@
+12System:    12Host Choedan-Kal 12Kernel 4.19.0-13-amd64 x86_64 12bits 64 12Desktop i3 4.16.1 
+           12Distro Debian GNU/Linux 10 (buster) 
+12Machine:   12Type Desktop 12Mobo Micro-Star 12model X399 SLI PLUS (MS-7B09) 12v 2.0 12serial <filter> 
+           12UEFI American Megatrends 12v A.70 12date 11/14/2018 
+12CPU:       12Topology 16-Core (2-Die) 12model AMD Ryzen Threadripper 2950X 12bits 64 12type MT MCP MCM 
+           12L2 cache 8192 KiB 
+           12Speed 549 MHz 12min/max 2200/3500 MHz 12Core speeds (MHz) 121 549 122 549 123 549 124 549 125 549 
+           126 549 127 549 128 549 129 549 1210 549 1211 549 1212 550 1213 544 1214 549 1215 549 1216 549 1217 549 1218 549 
+           1219 549 1220 549 1221 549 1222 549 1223 549 1224 550 1225 549 1226 549 1227 549 1228 549 1229 550 1230 549 
+           1231 549 1232 549 
+12Graphics:  12Device-1 NVIDIA GP102 [GeForce GTX 1080 Ti] 12driver nvidia 12v 418.152.00 
+           12Display 12server X.Org 1.20.4 12driver nvidia 12unloaded fbdev,modesetting,nouveau,vesa 
+           12resolution 1920x1080~60Hz, 1920x1080~60Hz, 2560x1440~60Hz, 2560x1440~60Hz 
+           12OpenGL 12renderer GeForce GTX 1080 Ti/PCIe/SSE2 12v 4.6.0 NVIDIA 418.152.00 
+12Audio:     12Device-1 AMD Family 17h HD Audio 12driver snd_hda_intel 
+           12Device-2 NVIDIA GP102 HDMI Audio 12driver snd_hda_intel 
+           12Device-3 Focusrite-Novation 12type USB 12driver snd-usb-audio,usb-storage 
+           12Sound Server ALSA 12v k4.19.0-13-amd64 
+12Network:   12Device-1 Intel I211 Gigabit Network 12driver igb 
+           12IF enp8s0 12state up 12speed 1000 Mbps 12duplex full 12mac <filter> 
+           12IF-ID-1 br-697de49800f0 12state down 12mac <filter> 
+           12IF-ID-2 br-9289fa1f391e 12state down 12mac <filter> 
+           12IF-ID-3 docker0 12state down 12mac <filter> 
+12Drives:    12Local Storage 12total 931.51 GiB 12used 459.47 GiB (49.3%) 
+           12ID-1 /dev/nvme0n1 12vendor Crucial 12model CT1000P1SSD8 12size 931.51 GiB 
+           12ID-2 /dev/nvme1n1 12vendor Crucial 12model CT1000P1SSD8 12size 931.51 GiB 
+           12ID-3 /dev/nvme2n1 12vendor Samsung 12model SSD 970 EVO Plus 1TB 12size 931.51 GiB 
+           12ID-4 /dev/sda 12type USB 12model Scarlett Welcome Disk 12size 192 KiB 
+12Partition: 12ID-1 / 12size 182.34 GiB 12used 92.15 GiB (50.5%) 12fs ext4 12dev /dev/dm-2 
+           12ID-2 /boot 12size 923.0 MiB 12used 106.5 MiB (11.5%) 12fs ext4 12dev /dev/nvme1n1p2 
+           12ID-3 /home 12size 613.37 GiB 12used 367.18 GiB (59.9%) 12fs ext4 12dev /dev/dm-3 
+           12ID-4 swap-1 12size 119.21 GiB 12used 0 KiB (0.0%) 12fs swap 12dev /dev/dm-1 
+12Sensors:   12System Temperatures 12cpu 37.5 C 12mobo N/A 12gpu nvidia 12temp 33 C 
+           12Fan Speeds (RPM) N/A 12gpu nvidia 12fan 0% 
+12Info:      12Processes 490 12Uptime 9m 12Memory 125.85 GiB 12used 1.78 GiB (1.4%) 12Client Sudo 12inxi 3.0.32 

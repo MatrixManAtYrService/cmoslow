@@ -1,0 +1,1 @@
+That was weird, so Im trying it again. First attempt to boot debian after clearing cmos fails (reboots without prompt), second attempt succeeds. Puts EFI partition at /dev/nvme2n1p1.

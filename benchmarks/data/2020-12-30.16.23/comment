@@ -1,0 +1,1 @@
+Powered off, then to windows, then rebooted to linux. I think that my video card drivers are "remembering" something from Windows on a reboot that they forget if I power off and boot up later. Also, having booted into Windows changed the EFI partition to /dev/nvme1n1p1
